@@ -258,12 +258,12 @@ export function TokenExplorer({ onSelectToken }: TokenExplorerProps) {
                     {pairs.length > 0 ? (
                         <div className="space-y-1 max-h-[500px] overflow-y-auto">
                             {/* Table header */}
-                            <div className="grid grid-cols-12 gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-gray-600 border-b border-surface-border/50">
+                            <div className="grid grid-cols-8 md:grid-cols-12 gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-gray-600 border-b border-surface-border/50">
                                 <div className="col-span-4">Token</div>
                                 <div className="col-span-2 text-right">Price</div>
                                 <div className="col-span-2 text-right">24h</div>
-                                <div className="col-span-2 text-right">Volume</div>
-                                <div className="col-span-2 text-right">Liquidity</div>
+                                <div className="hidden md:block col-span-2 text-right">Volume</div>
+                                <div className="hidden md:block col-span-2 text-right">Liquidity</div>
                             </div>
 
                             {pairs.map((pair, idx) => {
@@ -275,7 +275,7 @@ export function TokenExplorer({ onSelectToken }: TokenExplorerProps) {
                                     <button
                                         key={`${pair.pairAddress}-${idx}`}
                                         onClick={() => setSelectedPair(pair)}
-                                        className="w-full grid grid-cols-12 gap-2 px-3 py-2.5 rounded-lg hover:bg-surface/60 transition-all group text-left"
+                                        className="w-full grid grid-cols-8 md:grid-cols-12 gap-2 px-3 py-2.5 rounded-lg hover:bg-surface/60 transition-all group text-left"
                                     >
                                         {/* Token info */}
                                         <div className="col-span-4 flex items-center gap-2.5 min-w-0">
@@ -340,7 +340,7 @@ export function TokenExplorer({ onSelectToken }: TokenExplorerProps) {
                                         </div>
 
                                         {/* Volume */}
-                                        <div className="col-span-2 flex items-center justify-end">
+                                        <div className="hidden md:flex col-span-2 items-center justify-end">
                                             <span className="text-xs text-gray-400">
                                                 {pair.volume?.h24
                                                     ? formatNumber(
@@ -351,7 +351,7 @@ export function TokenExplorer({ onSelectToken }: TokenExplorerProps) {
                                         </div>
 
                                         {/* Liquidity */}
-                                        <div className="col-span-2 flex items-center justify-end">
+                                        <div className="hidden md:flex col-span-2 items-center justify-end">
                                             <span className="text-xs text-gray-400">
                                                 {pair.liquidity?.usd
                                                     ? formatNumber(
