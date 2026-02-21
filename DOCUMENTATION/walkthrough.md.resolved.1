@@ -1,0 +1,37 @@
+# OTC / P2P Trading — Implementation Walkthrough
+
+## What Was Built
+
+Escrow-protected P2P trading where users can create and fill token trade offers. Both sides' tokens swap atomically — either both get what they want or nothing happens. No one gets ripped off.
+
+## Files Created
+
+| File | Purpose |
+|------|---------|
+| [otcTypes.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/utils/otcTypes.ts) | TypeScript types for orders and creation params |
+| [otcStore.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/store/otcStore.ts) | localStorage persistence + 5 seed orders |
+| [useOTCOrders.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useOTCOrders.ts) | Hook with create/fill/cancel + validation |
+| [OTCApp.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/OTCApp.tsx) | Main orchestrator with view toggle |
+| [CreateOrder.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/CreateOrder.tsx) | Order creation form with chain/token selectors |
+| [OrderBook.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/OrderBook.tsx) | Filterable order list with search |
+| [OrderCard.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/OrderCard.tsx) | Individual order display card |
+| [FillOrderModal.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/FillOrderModal.tsx) | Trade confirmation modal with escrow badge |
+
+## Modified
+
+- [page.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/app/page.tsx) — Added **Swap & Bridge** / **OTC / P2P** tab navigation
+
+## Safety Features
+
+- **Escrow deposit** — Maker's tokens locked on order creation
+- **Atomic swap** — Both sides execute in one transaction
+- **Cancel anytime** — Full refund before someone fills
+- **Expiry timers** — Orders auto-expire (1h, 6h, 24h, 48h, 7d)
+- **Private deals** — Optional address restriction
+- **Self-fill prevention** — Can't fill your own order
+- **Confirmation modal** — Checkbox agreement before filling
+
+## Verification
+
+- ✅ Dev server compiles with no errors (`GET / 200`)
+- ✅ Only pre-existing optional dependency warnings (pino-pretty, react-native-async-storage)

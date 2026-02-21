@@ -1,0 +1,6 @@
+{
+  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+  "summary": "Production readiness implementation plan. Catalogs all mock data, simulated logic, and missing API integrations across the swap-bridge dApp. Covers: removing MOCK_MODE and 3 mock files, cleaning up adapter fallbacks in 1inch/Jupiter/LI.FI, wiring TokenExplorer swap widget to real APIs, creating a Solidity OTC escrow smart contract, and replacing localStorage-only OTC with real on-chain transactions.",
+  "updatedAt": "2026-02-15T20:51:16.129101600Z",
+  "version": "2"
+}

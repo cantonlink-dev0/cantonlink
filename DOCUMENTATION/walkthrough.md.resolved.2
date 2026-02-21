@@ -1,0 +1,51 @@
+# Omnidex — Connect Wallet & Production Readiness
+
+## Changes Made
+
+### Global Connect Wallet Button
+- Moved RainbowKit `ConnectButton` from inside individual card headers to the **global header** next to the Omnidex logo
+- Now visible across **all tabs** (Swap, OTC, Explore)
+- Shows wallet avatar + chain icon in compact mode
+
+### Walletless Swap Flow
+- Users can **get quotes without connecting a wallet** — `senderAddress` is optional
+- Quote button now shows "Enter Amount" / "Get Quote" instead of "Connect Wallet First"
+- Execute button prompts wallet connection via `useConnectModal` when user is ready
+- Added hint text: *"No wallet needed to get a quote · Connect when ready to execute"*
+
+### Optional Recipient Address
+- Added a settings gear ⚙️ in the Swap card header
+- Toggle reveals an **optional recipient address field**
+- Users can specify a different wallet to receive tokens (like SimpleSwap)
+- Falls back to connected wallet if left empty
+
+### OTC Component Cleanup
+- Removed redundant `ConnectButton` from OTC card header
+- Replaced with **"Escrow Protected"** badge (shield icon + green text)
+- Added `useConnectModal` — prompts wallet connect when creating orders without a wallet
+
+## Files Modified
+| File | Change |
+|------|--------|
+| [page.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/app/page.tsx) | Global ConnectButton in header, restructured logo area |
+| [SwapBridgeApp.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/SwapBridgeApp.tsx) | Walletless flow, recipient address, settings gear |
+| [OTCApp.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/OTCApp.tsx) | Removed ConnectButton, added escrow badge |
+
+## Production Sanity Check ✅
+
+| Check | Status |
+|-------|--------|
+| `alert()` calls in components | ✅ None found |
+| `console.log` leaks in components | ✅ None found |
+| API routes with Zod validation | ✅ `/api/quote`, `/api/swap`, `/api/bridge`, `/api/dexscreener` |
+| Error handling in API routes | ✅ All routes catch + return structured errors |
+| Build compilation | ✅ Clean (only harmless optional dep warnings) |
+| DexScreener CORS proxy | ✅ Server-side proxy with 30s cache |
+| Wallet connection flow | ✅ RainbowKit + Solana adapters configured |
+| Token logos | ✅ CoinGecko CDN with fallback letter circles |
+| OTC localStorage persistence | ✅ Orders persist across refreshes |
+| Price ticker animation | ✅ Smooth marquee with 5s jitter updates |
+
+### Known Harmless Warnings
+- `@react-native-async-storage/async-storage` — MetaMask SDK optional dep (web-only, unused)
+- `pino-pretty` — WalletConnect logger optional dep (unused in browser)

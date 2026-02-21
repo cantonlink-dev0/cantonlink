@@ -1,0 +1,117 @@
+# OTC/P2P Trading with Escrow Protection
+
+Add a secure peer-to-peer trading feature where users can create and fill token trade offers. Safety is guaranteed through a **smart contract escrow** — both sides' tokens are locked until the trade completes atomically.
+
+## How It Works
+
+```mermaid
+sequenceDiagram
+    participant Maker
+    participant Escrow Contract
+    participant Taker
+    
+    Maker->>Escrow Contract: 1. Create Order (deposit tokens)
+    Note over Escrow Contract: Tokens locked in escrow
+    Taker->>Escrow Contract: 2. Fill Order (deposit their tokens)
+    Escrow Contract->>Taker: 3. Release Maker's tokens to Taker
+    Escrow Contract->>Maker: 3. Release Taker's tokens to Maker
+    Note over Maker, Taker: Atomic swap — both get paid or neither does
+```
+
+**Safety guarantees:**
+- Maker's tokens are locked in escrow the moment they create an order
+- Taker's tokens are swapped atomically — both sides execute in one transaction
+- Maker can cancel anytime before someone fills the order (full refund)
+- Orders can have expiry times
+- Optional: restrict orders to a specific taker address (private deals)
+
+## User Review Required
+
+> [!IMPORTANT]
+> **No real smart contract deployment** — For now, all escrow logic will be **mocked/simulated** in the frontend. The UI, state management, and flow will be fully built so it's ready to plug in a real Solidity escrow contract later. This lets us iterate on UX without deploying to mainnet.
+
+> [!NOTE]
+> The P2P page will be a new route (`/otc`) accessible via a tab/nav alongside the existing Swap & Bridge page.
+
+## Proposed Changes
+
+### Navigation & Routing
+
+#### [MODIFY] [page.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/app/page.tsx)
+- Add top-level tab navigation: **Swap & Bridge** | **OTC / P2P**
+- Conditionally render `<SwapBridgeApp />` or `<OTCApp />`
+
+---
+
+### OTC Core Components
+
+#### [NEW] [OTCApp.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/OTCApp.tsx)
+- Main orchestrator for OTC feature
+- Two sub-views: **Create Order** and **Order Book** (list of open orders)
+- Manages state transitions between creating, browsing, and filling orders
+
+#### [NEW] [CreateOrder.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/CreateOrder.tsx)
+- Form to create a new P2P order:
+  - "I'm selling" — chain + token + amount
+  - "I want" — chain + token + amount
+  - Optional expiry time
+  - Optional "only fill by" address (private deals)
+- Submits to escrow (mock for now)
+
+#### [NEW] [OrderBook.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/OrderBook.tsx)
+- Displays all active P2P orders in a table/card grid
+- Shows: maker address, selling token/amount, wanting token/amount, expiry, status
+- "Fill Order" button for each compatible order
+- Filter by chain, token pair, status
+
+#### [NEW] [OrderCard.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/OrderCard.tsx)
+- Individual order display card with:
+  - Maker avatar (jazzicon from address)
+  - Token pair with logos
+  - Amounts and implied price
+  - Time remaining / expiry
+  - Fill / Cancel buttons
+
+#### [NEW] [FillOrderModal.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/otc/FillOrderModal.tsx)
+- Confirmation modal before filling an order
+- Shows full trade details, fees, and escrow status
+- Approval + fill transaction flow
+
+---
+
+### State & Logic
+
+#### [NEW] [useOTCOrders.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useOTCOrders.ts)
+- Hook managing order CRUD operations
+- `createOrder()` — lock tokens in escrow
+- `fillOrder()` — atomic swap via escrow
+- `cancelOrder()` — refund maker
+- Uses localStorage for mock persistence
+
+#### [NEW] [otcStore.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/store/otcStore.ts)
+- Order state types and localStorage persistence
+- Order statuses: `OPEN`, `FILLED`, `CANCELLED`, `EXPIRED`
+
+#### [NEW] [otcTypes.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/utils/otcTypes.ts)
+- TypeScript types for P2P orders
+
+---
+
+### Styling
+
+#### [MODIFY] [globals.css](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/app/globals.css)
+- Add OTC-specific utility classes and animations
+
+## Verification Plan
+
+### Automated Tests
+- Run `npm run dev` and verify no compile errors
+- Browser test: navigate between Swap & OTC tabs
+- Browser test: create an order, verify it appears in order book
+- Browser test: fill an order, verify status changes
+- Browser test: cancel an order, verify refund message
+
+### Manual Verification
+- Visual check that OTC UI matches the existing dark theme
+- Verify order cards show token logos from existing token list
+- Test expiry countdown display

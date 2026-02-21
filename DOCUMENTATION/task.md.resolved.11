@@ -1,0 +1,15 @@
+# Omnidex dApp — Task Tracker
+
+## Completed
+- [x] Core dApp scaffold, swap/bridge, chain logos, wallet connectors, OTC/P2P trading
+
+## Current Sprint
+
+### Navigation & Layout
+- [x] **Rolling Price Ticker** — Marquee with 15 tokens, price jitter, colored up/down %
+- [x] **3-Tab Navigation** — Swap / OTC / Explore tabs on page.tsx
+
+### Token Explorer
+- [x] **Explore Tab** — New tab with live DexScreener search
+- [x] **Token Search UI** — Search + quick-search tags + sorted results
+- [x] **Token Detail Modal** — Embedded DexScreener chart, buy/sell ratio, stats grid, action buttons

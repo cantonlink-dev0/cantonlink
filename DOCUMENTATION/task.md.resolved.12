@@ -1,0 +1,11 @@
+# Omnidex dApp — Task Tracker
+
+## Completed
+- [x] Core dApp scaffold, swap/bridge, chain logos, wallet connectors, OTC/P2P trading
+- [x] **Rolling Price Ticker** — Marquee with 15 tokens, price jitter, colored up/down %
+- [x] **3-Tab Navigation** — Swap / OTC / Explore tabs on page.tsx
+- [x] **Explore Tab** — Live DexScreener search with token detail modal + inline swap widget
+- [x] **Global Connect Wallet** — Moved ConnectButton to global header, visible across all tabs
+- [x] **Walletless Swap Flow** — Users can get quotes without wallet, connect only to execute
+- [x] **Recipient Address** — Optional field for specifying a different receive address
+- [x] **Production Sanity Check** — No alert() calls, no console.log leaks, all API routes validated

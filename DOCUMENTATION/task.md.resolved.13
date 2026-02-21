@@ -1,0 +1,26 @@
+# Production Readiness — Go Live
+
+## Phase 1: Remove Mock Infrastructure
+- [ ] Delete `src/lib/mock/` (3 files)
+- [ ] Update [.env.local](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/.env.local) — set `MOCK_MODE=0`, add key placeholders
+
+## Phase 2: Clean Adapters
+- [ ] 1inch adapter — remove mock fallback
+- [ ] Jupiter adapter — remove mock fallback
+- [ ] LI.FI adapter — remove mock fallback
+
+## Phase 3: OTC Smart Contract
+- [ ] Write `contracts/OTCEscrow.sol`
+- [ ] Generate ABI + addresses file `src/lib/contracts/otcEscrowAbi.ts`
+
+## Phase 4: Wire Token Explorer to Real APIs
+- [ ] Replace `SwapWidget.handleSwap()` simulation with real API calls
+
+## Phase 5: OTC Real Integration
+- [ ] Rewrite [useOTCOrders](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useOTCOrders.ts#14-191) — real contract calls instead of setTimeout
+- [ ] Clean [otcStore.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/store/otcStore.ts) — remove mockTxHash, remove seed orders
+- [ ] Clean [otcTypes.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/utils/otcTypes.ts) — remove "Mock" comments, add onChainOrderId
+
+## Phase 6: Verification
+- [ ] Build compiles clean
+- [ ] Update walkthrough

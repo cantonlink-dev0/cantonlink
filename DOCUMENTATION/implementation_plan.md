@@ -1,0 +1,129 @@
+# Production Readiness — Remove All Mocks, Wire Real APIs, Deploy OTC Escrow Contract
+
+## Audit Summary
+
+Full codebase audit complete. Here's every piece of mock/simulated code that must be replaced:
+
+| Area | What's Mock | What It Needs |
+|------|------------|---------------|
+| `.env.local` | `MOCK_MODE=1`, empty API keys | `MOCK_MODE=0`, real keys |
+| `src/lib/mock/` (3 files) | `mockQuotes.ts`, `mockRoutes.ts`, `mockStatus.ts` | Delete entirely |
+| 1inch adapter | Falls back to mock when `MOCK_MODE=1` | Remove mock fallback, require real API key |
+| Jupiter adapter | Falls back to mock when `MOCK_MODE=1` | Remove mock fallback |
+| LI.FI adapter | Falls back to mock when `MOCK_MODE=1` | Remove mock fallback, require real API key |
+| TokenExplorer `SwapWidget` | `setTimeout` delays + `Math.random()` success | Wire to real `/api/quote` → `/api/swap` flow |
+| OTC `useOTCOrders` hook | `setTimeout` delays, `mockTxHash()`, localStorage only | Real smart contract calls via wagmi |
+| OTC `otcStore.ts` | `mockTxHash()`, `getSeedOrders()` seed data | Remove seeds, remove mock hash |
+| OTC types | Comments say "Mock escrow/fill tx hash" | Real tx hashes from contract |
+
+## User Review Required
+
+> [!IMPORTANT]
+> **API Keys needed.** You must provide:
+> 1. **1inch API key** — Get free at [portal.1inch.dev](https://portal.1inch.dev)
+> 2. **LI.FI API key** — Get free at [li.fi/sdk](https://docs.li.fi) (optional, works without but rate-limited)
+> 3. **WalletConnect Project ID** — Get free at [cloud.walletconnect.com](https://cloud.walletconnect.com)
+
+> [!CAUTION]
+> **OTC Smart Contract.** I will write a Solidity escrow contract and generate the ABI for frontend integration. However:
+> - The contract must be **deployed by you** to each chain you want OTC on (Ethereum, Arbitrum, Base, etc.)
+> - Until deployed, OTC will show a "Coming Soon — Contract not deployed" state
+> - I'll provide the deploy script so you can deploy with your own private key
+
+## Proposed Changes
+
+### 1. Environment Configuration
+
+#### [MODIFY] [.env.local](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/.env.local)
+- Set `MOCK_MODE=0` (or remove it entirely)
+- Add placeholder comments for real API key values
+
+---
+
+### 2. Delete Mock Files
+
+#### [DELETE] [mockQuotes.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/mock/mockQuotes.ts)
+#### [DELETE] [mockRoutes.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/mock/mockRoutes.ts)
+#### [DELETE] [mockStatus.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/mock/mockStatus.ts)
+
+---
+
+### 3. Adapter Cleanup — Remove Mock Fallbacks
+
+#### [MODIFY] [oneInchAdapter.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/adapters/evm/oneInchAdapter.ts)
+- Remove `import { getMockEvmSwapQuote }` 
+- Remove `isMockMode()` function and the `if (isMockMode())` early return
+- If no API key is set, return a clear error message
+
+#### [MODIFY] [jupiterAdapter.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/adapters/solana/jupiterAdapter.ts)
+- Remove `import { getMockSolanaSwapQuote }`
+- Remove `isMockMode()` function and the `if (isMockMode())` early return
+- Jupiter API is free/public, no key needed
+
+#### [MODIFY] [lifiAdapter.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/adapters/bridge/lifiAdapter.ts)
+- Remove `import { getMockBridgeRoute }` and `import { getMockBridgeStatus }`
+- Remove `isMockMode()` function and all mock fallbacks
+- LI.FI works without API key (rate-limited), with key gets full access
+
+---
+
+### 4. Token Explorer — Real Swap Execution
+
+#### [MODIFY] [TokenExplorer.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/components/TokenExplorer.tsx)
+- Replace the `handleSwap()` function in `SwapWidget` that currently uses `setTimeout` + `Math.random()`
+- Wire it to call `/api/quote` for same-chain swaps and `/api/bridge` for cross-chain
+- Use `useAccount()` from wagmi to get the connected wallet
+- Use `useSendTransaction()` from wagmi to submit the actual swap tx
+- Show real quote output from the API instead of simple price math
+
+---
+
+### 5. OTC Smart Contract + Real Integration
+
+#### [NEW] [contracts/OTCEscrow.sol](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/contracts/OTCEscrow.sol)
+Solidity escrow contract with:
+- `createOrder(buyToken, buyAmount, expiry, allowedTaker?)` — maker deposits sell tokens into escrow
+- `fillOrder(orderId)` — taker deposits buy tokens, contract releases sell tokens to taker and buy tokens to maker
+- `cancelOrder(orderId)` — maker reclaims escrowed tokens (only if not filled)
+- Events: `OrderCreated`, `OrderFilled`, `OrderCancelled`
+- Supports ERC-20 and native ETH
+- Handles expiry enforcement
+
+#### [NEW] [src/lib/contracts/otcEscrowAbi.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/contracts/otcEscrowAbi.ts)
+- TypeScript ABI export for wagmi `useReadContract`/`useWriteContract`
+- Contract addresses per chain (initially empty, filled after deployment)
+
+#### [MODIFY] [useOTCOrders.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useOTCOrders.ts)
+- Remove all `setTimeout` simulated delays
+- Remove `mockTxHash()` usage
+- `createOrder`: call `escrow.createOrder()` on-chain, wait for tx receipt, store order with real tx hash
+- `fillOrder`: call `escrow.fillOrder()` on-chain, wait for receipt
+- `cancelOrder`: call `escrow.cancelOrder()` on-chain, wait for receipt
+- Keep localStorage as a cache/index, but tx hashes are real
+
+#### [MODIFY] [otcStore.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/store/otcStore.ts)
+- Remove `mockTxHash()` function
+- Remove `getSeedOrders()` — order book starts empty (real orders only)
+- Keep `loadOrders()` and `saveOrders()` for local cache
+
+#### [MODIFY] [otcTypes.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/utils/otcTypes.ts)
+- Remove "Mock" from JSDoc comments
+- Add `onChainOrderId?: number` field for the smart contract order index
+
+---
+
+### 6. Test File Cleanup
+
+Tests in `src/__tests__/` that reference `MOCK_MODE` are fine — tests should use mocks. No changes needed there.
+
+## Verification Plan
+
+### Build Check
+- `next build` must complete with zero type errors
+
+### Manual Verification
+1. **Swap tab** — enter a real quote (e.g., 1 ETH → USDC on Ethereum) and verify real price from 1inch
+2. **Bridge tab** — get a cross-chain quote (ETH → Arbitrum) and verify real route from LI.FI
+3. **Explore tab** — search for a token, click Buy, verify it calls real quote API
+4. **OTC tab** — verify order book starts empty, contract ABI is correct
+5. **Wallet** — connect via MetaMask, verify address shows up

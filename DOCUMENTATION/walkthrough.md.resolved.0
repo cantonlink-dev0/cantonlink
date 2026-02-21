@@ -1,0 +1,48 @@
+# Swap + Bridge dApp — Walkthrough
+
+## What Was Built
+
+A production-ready **Omnidex** dApp — single-screen Swap + Bridge UI supporting 8 EVM chains + Solana.
+
+## File Count: 61 files
+
+| Layer | Files |
+|---|---|
+| Config | 7 ([package.json](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/package.json), [tsconfig.json](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/tsconfig.json), [next.config.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/next.config.ts), [tailwind.config.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/tailwind.config.ts), [postcss.config.mjs](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/postcss.config.mjs), [vitest.config.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/vitest.config.ts), [.env.example](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/.env.example)) |
+| Core Lib | 14 (chains, tokens, schemas, routing, store, mock fixtures) |
+| Provider Adapters | 4 (1inch, Jupiter, LI.FI, approval helper) |
+| API Routes | 5 (`/api/quote`, `/api/swap`, `/api/bridge`, `/api/bridge/status`, `/api/tokens`) |
+| Hooks | 6 ([useQuote](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useQuote.ts#30-73), [useSwapExecution](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useSwapExecution.ts#17-75), [useBridgeExecution](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useBridgeExecution.ts#23-151), [useApproval](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useApproval.ts#20-66), [useTokenBalance](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/useTokenBalance.ts#19-56), [usePersistedRoute](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/hooks/usePersistedRoute.ts#9-32)) |
+| Wallet Providers | 2 ([wagmiConfig.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/providers/wagmiConfig.ts), [solanaConfig.ts](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/lib/providers/solanaConfig.ts)) |
+| UI Components | 12 (4 primitives + 8 feature components) |
+| App Shell | 4 ([layout.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/app/layout.tsx), [page.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/app/page.tsx), [providers.tsx](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/app/providers.tsx), [globals.css](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/src/app/globals.css)) |
+| Tests | 7 test files |
+| Docs | 1 ([README.md](file:///C:/Users/chris/.gemini/antigravity/scratch/swap-bridge-dapp/README.md)) |
+
+## Key Decisions
+
+- **Adapter pattern**: Routing engine delegates to registered adapters (1inch, Jupiter, LI.FI), making provider swaps trivial
+- **Mock mode**: `MOCK_MODE=1` enables full app testing without API keys — deterministic fixtures for quotes, routes, status progression
+- **Mode enforcement**: Strict SWAP_ONLY / BRIDGE_ONLY / AUTO toggle with pre-validation before quote requests
+- **Server-side API routes**: All API keys stay on the server; frontend only calls `/api/*` endpoints
+
+## Test Coverage
+
+7 test suites covering:
+- Mode enforcement rules (5 tests)
+- Routing engine delegation & approval logic (8 tests)
+- 1inch adapter mock responses (3 tests)
+- Jupiter adapter mock responses (3 tests)
+- LI.FI adapter bridge routes & status tracking (6 tests)
+- Zod schema validation & rejection (10 tests)
+- Integration: full mock flow across all providers (6 tests)
+
+## How to Run
+
+```bash
+cd C:\Users\chris\.gemini\antigravity\scratch\swap-bridge-dapp
+npm install
+cp .env.example .env.local   # set MOCK_MODE=1
+npm run dev                   # → http://localhost:3000
+npm test                      # run all test suites
+```

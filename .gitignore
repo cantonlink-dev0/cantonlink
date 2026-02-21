@@ -1,0 +1,70 @@
+# ═══════════════════════════════════════════════════════════════
+# PRIVATE — Never push these to GitHub
+# ═══════════════════════════════════════════════════════════════
+
+# API keys, RPC URLs, secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# ═══════════════════════════════════════════════════════════════
+# Build artifacts — generated, not source code
+# ═══════════════════════════════════════════════════════════════
+
+# Next.js
+.next/
+out/
+
+# Node
+node_modules/
+
+# ═══════════════════════════════════════════════════════════════
+# System / Editor files
+# ═══════════════════════════════════════════════════════════════
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Solana / Rust build artifacts
+**/target/
+**/*.so
+
+# Sui build artifacts
+contracts/sui/build/
+
+# Hardhat artifacts
+artifacts/
+cache/
+
+# Logs
+dev.log
+*.log
+
+# Testing
+coverage/
+
+# Package lock (Vercel will generate its own)
+package-lock.json
