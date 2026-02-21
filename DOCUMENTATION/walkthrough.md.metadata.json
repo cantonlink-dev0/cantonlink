@@ -1,6 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_WALKTHROUGH",
-  "summary": "Complete walkthrough of production readiness audit: mock removal, adapter cleanup, OTC contract, keyless API migration (1inch→ParaSwap), and all build verifications.",
-  "updatedAt": "2026-02-15T21:21:16.772369200Z",
-  "version": "4"
-}

@@ -68,3 +68,6 @@ coverage/
 
 # Package lock (Vercel will generate its own)
 package-lock.json
+
+# Development documentation (local only)
+DOCUMENTATION/

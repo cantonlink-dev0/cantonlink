@@ -1,5 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_OTHER",
-  "summary": "Complete cost breakdown for deploying the OTC P2P smart contract (OTCEscrow.sol) across all 31 supported EVM chains. Includes per-chain gas estimates, total costs, and deployment recommendations.",
-  "updatedAt": "2026-02-16T00:00:25.349405600Z"
-}
