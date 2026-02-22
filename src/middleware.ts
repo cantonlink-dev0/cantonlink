@@ -1,35 +1,26 @@
 // src/middleware.ts
 // Security middleware: domain redirect + scraper blocking + security headers
-// Allows search engines (Google, Bing) but blocks data scrapers and AI bots
+// Allows search engines AND real users — only blocks automated scraping tools
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const CANONICAL_DOMAIN = "cantonlink.io";
 
-// Legitimate search engine bots — ALLOW these
-const ALLOWED_BOTS = [
-    "googlebot", "bingbot", "yandexbot", "duckduckbot",
-    "slurp", "baiduspider", "facebookexternalhit",
-    "twitterbot", "linkedinbot", "whatsapp",
-    "telegrambot", "discordbot",
-];
-
-// Scraper/AI bots to block
+// Known malicious scraper/AI bot user-agents to block
+// IMPORTANT: Do NOT add generic HTTP libraries here (node-fetch, axios, curl, etc.)
+// as wallets, dApps, and legitimate services use them internally
 const BLOCKED_BOTS = [
-    "scrapy", "puppeteer", "playwright", "headlesschrome",
-    "phantomjs", "selenium", "wget", "curl",
-    "python-requests", "httpclient", "java/", "go-http-client",
-    "node-fetch", "axios",
-    "gptbot", "chatgpt", "ccbot", "anthropic", "claudebot",
-    "bytespider", "google-extended", "dataforseo", "semrush",
-    "ahrefs", "mj12bot", "dotbot", "petalbot",
+    // Automation frameworks (headless browsers only)
+    "scrapy", "puppeteer/", "playwright/", "headlesschrome",
+    "phantomjs", "selenium",
+    // AI training bots
+    "gptbot", "chatgpt-user", "ccbot/", "anthropic-ai", "claudebot",
+    "bytespider", "google-extended",
+    // SEO scraper bots
+    "dataforseobot", "semrushbot", "ahrefsbot",
+    "mj12bot", "dotbot", "petalbot",
 ];
-
-function isAllowedBot(ua: string): boolean {
-    const lower = ua.toLowerCase();
-    return ALLOWED_BOTS.some((bot) => lower.includes(bot));
-}
 
 function isBlockedBot(ua: string): boolean {
     const lower = ua.toLowerCase();
@@ -55,8 +46,8 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(url, { status: 301 });
     }
 
-    // --- Block scraper bots (but allow search engines) ---
-    if (pathname !== "/robots.txt" && !isAllowedBot(ua) && isBlockedBot(ua)) {
+    // --- Block only known scraper/AI bots ---
+    if (pathname !== "/robots.txt" && isBlockedBot(ua)) {
         return new NextResponse("Forbidden", { status: 403 });
     }
 
