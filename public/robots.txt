@@ -1,9 +1,16 @@
-# cantonlink.io - Block all scrapers and crawlers
-User-agent: *
-Disallow: /
-Disallow: /api/
+# cantonlink.io
+# Allow search engines, block scrapers and AI bots
 
-# Block known AI/scraper bots explicitly
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Block AI training bots
 User-agent: GPTBot
 Disallow: /
 
@@ -16,13 +23,36 @@ Disallow: /
 User-agent: anthropic-ai
 Disallow: /
 
+User-agent: ClaudeBot
+Disallow: /
+
 User-agent: Google-Extended
 Disallow: /
 
 User-agent: Bytespider
 Disallow: /
 
-User-agent: ClaudeBot
+# Block known scrapers
+User-agent: AhrefsBot
 Disallow: /
 
-# No sitemap — we don't want indexing
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+# Block API scraping for all bots
+User-agent: *
+Disallow: /api/
+
+Sitemap: https://cantonlink.io/sitemap.xml

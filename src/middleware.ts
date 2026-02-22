@@ -1,23 +1,37 @@
 // src/middleware.ts
-// Security middleware: domain redirect + anti-scraping + security headers
+// Security middleware: domain redirect + scraper blocking + security headers
+// Allows search engines (Google, Bing) but blocks data scrapers and AI bots
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const CANONICAL_DOMAIN = "cantonlink.io";
 
-// Known bot user-agents to block
+// Legitimate search engine bots — ALLOW these
+const ALLOWED_BOTS = [
+    "googlebot", "bingbot", "yandexbot", "duckduckbot",
+    "slurp", "baiduspider", "facebookexternalhit",
+    "twitterbot", "linkedinbot", "whatsapp",
+    "telegrambot", "discordbot",
+];
+
+// Scraper/AI bots to block
 const BLOCKED_BOTS = [
-    "bot", "crawler", "spider", "scraper", "wget", "curl",
+    "scrapy", "puppeteer", "playwright", "headlesschrome",
+    "phantomjs", "selenium", "wget", "curl",
     "python-requests", "httpclient", "java/", "go-http-client",
-    "node-fetch", "axios", "scrapy", "puppeteer", "playwright",
-    "headlesschrome", "phantomjs", "selenium",
+    "node-fetch", "axios",
     "gptbot", "chatgpt", "ccbot", "anthropic", "claudebot",
     "bytespider", "google-extended", "dataforseo", "semrush",
     "ahrefs", "mj12bot", "dotbot", "petalbot",
 ];
 
-function isBot(ua: string): boolean {
+function isAllowedBot(ua: string): boolean {
+    const lower = ua.toLowerCase();
+    return ALLOWED_BOTS.some((bot) => lower.includes(bot));
+}
+
+function isBlockedBot(ua: string): boolean {
     const lower = ua.toLowerCase();
     return BLOCKED_BOTS.some((bot) => lower.includes(bot));
 }
@@ -41,22 +55,18 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(url, { status: 301 });
     }
 
-    // --- Block bots/scrapers (except for robots.txt itself) ---
-    if (pathname !== "/robots.txt" && isBot(ua)) {
+    // --- Block scraper bots (but allow search engines) ---
+    if (pathname !== "/robots.txt" && !isAllowedBot(ua) && isBlockedBot(ua)) {
         return new NextResponse("Forbidden", { status: 403 });
     }
 
-    // --- Add security headers to all responses ---
+    // --- Add security headers ---
     const response = NextResponse.next();
 
-    // Prevent search engine indexing
-    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
-
-    // Security headers
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("X-XSS-Protection", "1; mode=block");
-    response.headers.set("Referrer-Policy", "no-referrer");
+    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
     response.headers.set(
         "Permissions-Policy",
         "camera=(), microphone=(), geolocation=(), browsing-topics=()"
