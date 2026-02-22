@@ -11,7 +11,6 @@ import {
     trustWallet,
     ledgerWallet,
     braveWallet,
-    phantomWallet,
     rabbyWallet,
     zerionWallet,
     argentWallet,
@@ -24,6 +23,8 @@ import {
     binanceWallet,
     krakenWallet,
 } from "@rainbow-me/rainbowkit/wallets";
+// NOTE: phantomWallet removed — it uses window.phantom.ethereum (EVM mode)
+// which conflicts with MetaMask and hangs. Phantom is Solana-only in this app.
 import { createConfig, http } from "wagmi";
 import { defineChain } from "viem";
 import {
@@ -140,7 +141,6 @@ const connectors = connectorsForWallets(
                 rainbowWallet,
                 coinbaseWallet,
                 trustWallet,
-                phantomWallet,
                 rabbyWallet,
                 zerionWallet,
             ],
