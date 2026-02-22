@@ -23,6 +23,10 @@ const CantonWalletButton = dynamic(
     () => import("@/components/CantonWalletButton").then(mod => ({ default: mod.CantonWalletButton })),
     { ssr: false }
 );
+const SolanaWalletButton = dynamic(
+    () => import("@/components/SolanaWalletButton").then(mod => ({ default: mod.SolanaWalletButton })),
+    { ssr: false }
+);
 
 type AppTab = "swap" | "otc" | "explore";
 
@@ -63,8 +67,9 @@ export default function HomePage() {
                             </div>
                         </div>
 
-                        {/* Wallet connect buttons — EVM + Canton */}
+                        {/* Wallet connect buttons — Solana + EVM + Canton */}
                         <div className="flex items-center gap-2">
+                            <SolanaWalletButton />
                             <CantonWalletButton />
                             <ConnectButton
                                 accountStatus="avatar"
