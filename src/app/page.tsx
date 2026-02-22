@@ -72,6 +72,7 @@ export default function HomePage() {
                             <SolanaWalletButton />
                             <CantonWalletButton />
                             <ConnectButton
+                                label="EVM Wallets"
                                 accountStatus="avatar"
                                 chainStatus="icon"
                                 showBalance={false}
