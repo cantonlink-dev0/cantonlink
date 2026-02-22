@@ -10,6 +10,17 @@ export const metadata: Metadata = {
     title: "CantonLink | Swapping & Bridging on Canton",
     description:
         "Swap tokens, bridge assets, and trade P2P across 35+ chains. Powered by ParaSwap, Jupiter, and LI.FI.",
+    robots: {
+        index: false,
+        follow: false,
+        googleBot: {
+            index: false,
+            follow: false,
+            "max-snippet": -1,
+            "max-image-preview": "none",
+            "max-video-preview": -1,
+        },
+    },
     keywords: [
         "cantonlink",
         "canton network",
