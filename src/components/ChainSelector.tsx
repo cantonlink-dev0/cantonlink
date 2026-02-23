@@ -106,7 +106,7 @@ export function ChainSelector({ value, onChange, label }: ChainSelectorProps) {
                                         {chain.name}
                                     </span>
                                     <span className="text-xs text-gray-500">
-                                        {chain.type === "solana" ? "SVM" : chain.type === "canton" ? "DAML" : `#${chain.id}`}
+                                        {chain.type === "solana" ? "SVM" : chain.type === "canton" ? "DAML" : "EVM"}
                                     </span>
                                 </button>
                             );

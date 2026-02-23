@@ -39,7 +39,7 @@ export function SwapBridgeApp() {
     const [amount, setAmount] = useState("");
     const [slippageBps] = useState(DEFAULT_SLIPPAGE_BPS);
     const [recipientAddress, setRecipientAddress] = useState("");
-    const [showRecipient, setShowRecipient] = useState(false);
+    // Recipient address always visible (no settings toggle needed)
 
     // ─── Wallet ─────────────────────────────────────────────────────────────────
     const { address: evmAddress, isConnected: isEvmConnected } = useAccount();
@@ -216,27 +216,9 @@ export function SwapBridgeApp() {
             <div className="bg-surface-raised rounded-2xl border border-surface-border shadow-2xl overflow-hidden">
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-surface-border">
-                    <div className="flex items-center justify-between">
-                        <h1 className="text-lg font-bold text-gray-100">
-                            Swap & Bridge
-                        </h1>
-                        <div className="flex items-center gap-2">
-                            {/* Settings gear */}
-                            <button
-                                onClick={() => setShowRecipient(!showRecipient)}
-                                className={`p-2 rounded-lg transition-colors ${showRecipient
-                                    ? "bg-brand-500/10 text-brand-400"
-                                    : "text-gray-500 hover:text-gray-300 hover:bg-surface"
-                                    }`}
-                                title="Custom recipient address"
-                            >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+                    <h1 className="text-lg font-bold text-gray-100">
+                        Swap & Bridge
+                    </h1>
                 </div>
 
                 {/* Mode toggle */}
@@ -321,26 +303,24 @@ export function SwapBridgeApp() {
                     </div>
                 </div>
 
-                {/* Recipient address (walletless flow) */}
-                {showRecipient && (
-                    <div className="px-6 pt-4 animate-slide-up">
-                        <div>
-                            <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">
-                                Recipient Address (optional)
-                            </label>
-                            <input
-                                type="text"
-                                value={recipientAddress}
-                                onChange={(e) => setRecipientAddress(e.target.value)}
-                                placeholder={isEvmConnected ? evmAddress : "0x... or paste wallet address"}
-                                className="w-full px-4 py-2.5 bg-surface rounded-xl border border-surface-border text-gray-100 placeholder-gray-600 text-sm font-mono focus:outline-none focus:border-brand-500/50 transition-colors"
-                            />
-                            <p className="text-[10px] text-gray-600 mt-1.5">
-                                Leave empty to use your connected wallet. Specify a different address to receive tokens elsewhere.
-                            </p>
-                        </div>
+                {/* Recipient address — always visible */}
+                <div className="px-6 pt-4">
+                    <div>
+                        <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">
+                            Recipient Address (optional)
+                        </label>
+                        <input
+                            type="text"
+                            value={recipientAddress}
+                            onChange={(e) => setRecipientAddress(e.target.value)}
+                            placeholder={isEvmConnected ? evmAddress : "0x... or paste wallet address"}
+                            className="w-full px-4 py-2.5 bg-surface rounded-xl border border-surface-border text-gray-100 placeholder-gray-600 text-sm font-mono focus:outline-none focus:border-brand-500/50 transition-colors"
+                        />
+                        <p className="text-[10px] text-gray-600 mt-1.5">
+                            Leave empty to use your connected wallet. Specify a different address to receive tokens elsewhere.
+                        </p>
                     </div>
-                )}
+                </div>
 
                 {/* Mode error */}
                 {!modeValidation.valid && modeValidation.error && (

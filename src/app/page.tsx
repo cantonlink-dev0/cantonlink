@@ -67,18 +67,16 @@ export default function HomePage() {
                             </div>
                         </div>
 
-                        {/* Wallet connections — Canton is primary */}
-                        <div className="flex flex-col items-end gap-1.5">
+                        {/* Wallets — single row */}
+                        <div className="flex items-center gap-1.5">
                             <CantonWalletButton />
-                            <div className="flex items-center gap-1.5">
-                                <SolanaWalletButton />
-                                <ConnectButton
-                                    label="EVM Wallets"
-                                    accountStatus="avatar"
-                                    chainStatus="icon"
-                                    showBalance={false}
-                                />
-                            </div>
+                            <SolanaWalletButton />
+                            <ConnectButton
+                                label="EVM"
+                                accountStatus="avatar"
+                                chainStatus="icon"
+                                showBalance={false}
+                            />
                         </div>
                     </div>
                 </div>
