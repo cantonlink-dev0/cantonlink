@@ -127,9 +127,7 @@ export function UnifiedWalletButton() {
                                 {isCantonConnected && cantonPartyId ? (
                                     <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-yellow-500/20 bg-yellow-500/5">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-yellow-400 to-purple-600 flex items-center justify-center">
-                                                <span className="text-[9px] font-bold text-white">C</span>
-                                            </div>
+                                            <img src="/chains/canton.svg" alt="Canton" className="w-6 h-6 rounded-full" />
                                             <div>
                                                 <div className="text-xs font-mono text-yellow-300">{shortAddr(cantonPartyId)}</div>
                                                 <div className="text-[10px] text-gray-500">Canton</div>
@@ -154,9 +152,7 @@ export function UnifiedWalletButton() {
                                             bg-yellow-500/10 hover:bg-yellow-500/15
                                             transition-all duration-150 text-left group"
                                     >
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-purple-600 flex items-center justify-center flex-shrink-0">
-                                            <span className="text-xs font-bold text-white">C</span>
-                                        </div>
+                                        <img src="/chains/canton.svg" alt="Canton" className="w-8 h-8 rounded-full flex-shrink-0" />
                                         <div className="flex-1">
                                             <div className="text-white text-sm font-semibold group-hover:text-yellow-300 transition-colors">
                                                 Canton Wallet
@@ -181,9 +177,7 @@ export function UnifiedWalletButton() {
                                 {isEvmConnected && evmAddress ? (
                                     <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-brand-500/20 bg-brand-500/5">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                                                <span className="text-[9px] font-bold text-white">E</span>
-                                            </div>
+                                            <img src="/chains/ethereum.png" alt="EVM" className="w-6 h-6 rounded-full" />
                                             <div>
                                                 <div className="text-xs font-mono text-brand-300">{shortAddr(evmAddress)}</div>
                                                 <div className="text-[10px] text-gray-500">MetaMask / EVM</div>
@@ -207,9 +201,7 @@ export function UnifiedWalletButton() {
                                             bg-white/5 hover:bg-brand-500/10
                                             transition-all duration-150 text-left group"
                                     >
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center flex-shrink-0">
-                                            <span className="text-xs font-bold text-white">E</span>
-                                        </div>
+                                        <img src="/chains/ethereum.png" alt="EVM" className="w-8 h-8 rounded-full flex-shrink-0" />
                                         <div className="flex-1">
                                             <div className="text-white text-sm font-medium group-hover:text-brand-300 transition-colors">
                                                 EVM Wallets
@@ -231,9 +223,7 @@ export function UnifiedWalletButton() {
                                 {isSolConnected && solAddress ? (
                                     <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-purple-500/20 bg-purple-500/5">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-teal-400 flex items-center justify-center">
-                                                <span className="text-[9px] font-bold text-white">S</span>
-                                            </div>
+                                            <img src="/chains/solana.png" alt="Solana" className="w-6 h-6 rounded-full" />
                                             <div>
                                                 <div className="text-xs font-mono text-purple-300">{shortAddr(solAddress)}</div>
                                                 <div className="text-[10px] text-gray-500">Solana</div>
@@ -257,9 +247,7 @@ export function UnifiedWalletButton() {
                                             bg-white/5 hover:bg-purple-500/10
                                             transition-all duration-150 text-left group"
                                     >
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-teal-400 flex items-center justify-center flex-shrink-0">
-                                            <span className="text-xs font-bold text-white">S</span>
-                                        </div>
+                                        <img src="/chains/solana.png" alt="Solana" className="w-8 h-8 rounded-full flex-shrink-0" />
                                         <div className="flex-1">
                                             <div className="text-white text-sm font-medium group-hover:text-purple-300 transition-colors">
                                                 Solana Wallets
