@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import { TokenExplorer } from "@/components/TokenExplorer";
 import { PriceTicker } from "@/components/PriceTicker";
 import { RibbonBackground } from "@/components/RibbonBackground";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 // Dynamic imports with ssr:false — prevents Canton hooks (useSession, useConnect) from
 // running server-side where CantonConnectProvider is not mounted (cantonClient is null).
@@ -19,12 +18,14 @@ const OTCApp = dynamic(
     () => import("@/components/otc/OTCApp").then(mod => ({ default: mod.OTCApp })),
     { ssr: false, loading: () => <div className="animate-pulse h-96 w-full max-w-lg rounded-2xl bg-white/5" /> }
 );
+// CantonWalletButton renders hidden — only its modal is used, triggered via custom event
 const CantonWalletButton = dynamic(
     () => import("@/components/CantonWalletButton").then(mod => ({ default: mod.CantonWalletButton })),
     { ssr: false }
 );
-const SolanaWalletButton = dynamic(
-    () => import("@/components/SolanaWalletButton").then(mod => ({ default: mod.SolanaWalletButton })),
+// UnifiedWalletButton — single button that opens a modal with all wallet types
+const UnifiedWalletButton = dynamic(
+    () => import("@/components/UnifiedWalletButton").then(mod => ({ default: mod.UnifiedWalletButton })),
     { ssr: false }
 );
 
@@ -67,17 +68,10 @@ export default function HomePage() {
                             </div>
                         </div>
 
-                        {/* Wallets — single row */}
-                        <div className="flex items-center gap-1.5">
-                            <CantonWalletButton />
-                            <SolanaWalletButton />
-                            <ConnectButton
-                                label="EVM"
-                                accountStatus="avatar"
-                                chainStatus="icon"
-                                showBalance={false}
-                            />
-                        </div>
+                        {/* Single unified wallet button */}
+                        <UnifiedWalletButton />
+                        {/* Canton wallet modal (hidden, triggered via custom event) */}
+                        <CantonWalletButton />
                     </div>
                 </div>
 

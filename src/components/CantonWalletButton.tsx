@@ -339,6 +339,14 @@ export function CantonWalletButton() {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => { setMounted(true); }, []);
+
+    // Listen for custom event from UnifiedWalletButton
+    useEffect(() => {
+        const handler = () => setShowModal(true);
+        window.addEventListener("open-canton-wallet", handler);
+        return () => window.removeEventListener("open-canton-wallet", handler);
+    }, []);
+
     if (!mounted) return null;
 
     // Determine connection state (either source)
@@ -352,72 +360,14 @@ export function CantonWalletButton() {
         if (!wallet.error) setShowModal(false);
     };
 
-    const handleDisconnect = () => {
-        if (cantonSession) cantonDisconnect();
-        wallet.disconnect();
-    };
-
-    // ── Connected state ──────────────────────────────────────────────────────
-    if (isConnected && partyId) {
-        const displayId = partyId.length > 16
-            ? `${partyId.slice(0, 8)}...${partyId.slice(-6)}`
-            : partyId;
-
-        return (
-            <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-yellow-500/20 bg-yellow-500/5">
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-purple-600 flex items-center justify-center">
-                        <span className="text-[9px] font-bold text-white">C</span>
-                    </div>
-                    <span className="text-xs font-mono text-yellow-300 tracking-tight">{displayId}</span>
-                    {wallet.usdcxHoldings.length > 0 && (
-                        <span className="text-[10px] text-yellow-500/70">
-                            {wallet.usdcxHoldings.reduce((s, h) => s + parseFloat(h.amount || "0"), 0).toFixed(2)} USDCx
-                        </span>
-                    )}
-                </div>
-                <button
-                    onClick={handleDisconnect}
-                    className="px-2 py-2 rounded-lg text-gray-500 hover:text-red-400 transition-colors"
-                    title="Disconnect Canton Wallet"
-                >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                </button>
-            </div>
-        );
-    }
-
-    // ── Disconnected state ───────────────────────────────────────────────────
+    // Only render the modal — the visible button is now handled by UnifiedWalletButton
     return (
-        <>
-            <button
-                onClick={() => setShowModal(true)}
-                disabled={isConnecting}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl
-                    bg-gradient-to-r from-yellow-500/10 to-purple-500/10
-                    border border-yellow-500/20 hover:border-yellow-400/40
-                    text-yellow-300 hover:text-yellow-200
-                    transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/5"
-            >
-                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-purple-600 flex items-center justify-center
-                    group-hover:shadow-md group-hover:shadow-yellow-400/30 transition-shadow">
-                    <span className="text-[9px] font-bold text-white">C</span>
-                </div>
-                <span className="text-xs font-semibold tracking-wide">
-                    {isConnecting ? "Connecting..." : "Canton Wallet"}
-                </span>
-            </button>
-
-            <CantonWalletModal
-                isOpen={showModal}
-                onClose={() => setShowModal(false)}
-                onJwtSubmit={handleJwtSubmit}
-                isConnecting={isConnecting}
-                error={error}
-            />
-        </>
+        <CantonWalletModal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            onJwtSubmit={handleJwtSubmit}
+            isConnecting={isConnecting}
+            error={error}
+        />
     );
 }
